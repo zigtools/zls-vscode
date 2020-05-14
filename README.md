@@ -1,5 +1,7 @@
 # zig-language-server README
 
+![CI](https://github.com/markfirmware/private-zig-lsc/workflows/CI/badge.svg)
+
 This is the README for your extension "zig-language-server". After writing up a brief description, we recommend including the following sections.
 
 ## Features
