@@ -1,8 +1,17 @@
 {
-	"name": "zig-lsc",
-	"displayName": "Zig Language Server Client",
+	"name": "zls-vscode",
+	"author": {
+		"name": "Auguste Rame",
+		"url": "https://augustera.me"
+	},
+	"publisher": "SuperAuguste",
+	"displayName": "ZLS for VSCode",
 	"description": "A language client for `zls`.",
-	"version": "0.0.1",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/zigtools/zls-vscode"
+	},
+	"version": "1.0.0",
 	"engines": {
 		"vscode": "^1.44.0"
 	},
@@ -67,9 +76,7 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"dependencies": {
-		"@types/ws": "^7.2.4",
-		"vscode-languageclient": "^6.1.3",
-		"ws": "^7.2.3"
+		"vscode-languageclient": "^6.1.3"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",
