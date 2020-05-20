@@ -4,7 +4,7 @@
 		"name": "Auguste Rame",
 		"url": "https://augustera.me"
 	},
-	"publisher": "SuperAuguste",
+	"publisher": "AugusteRame",
 	"displayName": "ZLS for VSCode",
 	"description": "A language client for `zls`.",
 	"repository": {
