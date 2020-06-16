@@ -23,12 +23,6 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
-		"commands": [
-			{
-				"command": "zigLanguageClient.startStreaming",
-				"title": "Zig Language Client: Start Streaming"
-			}
-		],
 		"configuration": {
 			"type": "object",
 			"title": "Zig language client configuration",
@@ -37,35 +31,18 @@
 					"scope": "resource",
 					"type": "string",
 					"description": "Path to `zls` executable."
-				},
-				"zigLanguageClient.trace.server": {
-					"scope": "window",
-					"type": "object",
-					"description": "Traces the communication between VS Code and the language server.",
-					"properties": {
-						"verbosity": {
-							"type": "string",
-							"description": "Controls the verbosity of the trace.",
-							"enum": [
-								"off",
-								"message",
-								"verbose"
-							],
-							"default": "off"
-						},
-						"format": {
-							"type": "string",
-							"description": "Controls the output format of the trace.",
-							"enum": [
-								"text",
-								"json"
-							],
-							"default": "text"
-						}
-					}
 				}
 			}
-		}
+		},
+		"languages": [
+			{
+				"id": "zig",
+				"extensions": [
+					".zig"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",
@@ -76,7 +53,7 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"dependencies": {
-		"vscode-languageclient": "^6.1.3"
+		"vscode-languageclient": "7.0.0-next.1"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.1",

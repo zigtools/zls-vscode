@@ -6,6 +6,7 @@ import {
   LanguageClientOptions,
   ServerOptions
 } from 'vscode-languageclient';
+import { SemanticTokensFeature } from 'vscode-languageclient/lib/semanticTokens.proposed';
 
 let client: LanguageClient;
 
@@ -36,6 +37,7 @@ export function activate(context: ExtensionContext) {
     clientOptions
   );
 
+  client.registerFeature(new SemanticTokensFeature(client));
   client.start();
 }
 
