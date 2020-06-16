@@ -1,6 +1,7 @@
 import * as path from 'path';
 import { workspace, ExtensionContext, commands, OutputChannel, window } from 'vscode';
 
+import * as vscode from 'vscode';
 import {
   LanguageClient,
   LanguageClientOptions,
@@ -39,6 +40,19 @@ export function activate(context: ExtensionContext) {
 
   client.registerFeature(new SemanticTokensFeature(client));
   client.start();
+
+  vscode.commands.registerCommand("zls.start", () => {
+    client.start();
+  });
+
+  vscode.commands.registerCommand("zls.stop", async () => {
+    await client.stop();
+  });
+
+  vscode.commands.registerCommand("zls.restart", async () => {
+    await client.stop();
+    client.start();
+  });
 }
 
 export function deactivate(): Thenable<void> {

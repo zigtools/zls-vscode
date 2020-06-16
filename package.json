@@ -23,6 +23,23 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"commands": [
+			{
+				"command": "zls.start",
+				"title": "Start Zig Language Server",
+				"category": "Zig Language Server"
+			},
+			{
+				"command": "zls.stop",
+				"title": "Stop Zig Language Server",
+				"category": "Zig Language Server"
+			},
+			{
+				"command": "zls.restart",
+				"title": "Restart Zig Language Server",
+				"category": "Zig Language Server"
+			}
+		],
 		"configuration": {
 			"type": "object",
 			"title": "Zig language client configuration",
