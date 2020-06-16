@@ -1,14 +1,12 @@
 import * as path from 'path';
 import { workspace, ExtensionContext, commands, OutputChannel, window } from 'vscode';
 
-import * as vscode from 'vscode';
 import {
   LanguageClient,
   LanguageClientOptions,
   ServerOptions
 } from 'vscode-languageclient';
 import { SemanticTokensFeature } from 'vscode-languageclient/lib/semanticTokens.proposed';
-import { downloadAndUnzipVSCode } from 'vscode-test';
 
 let client: LanguageClient;
 
