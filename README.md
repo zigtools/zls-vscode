@@ -14,3 +14,11 @@ In the future, we hope to make installing ZLS for Visual Studio Code much simple
 ### 1.0.0
 
 > Initial release!
+
+### 1.0.1
+
+> Added Official Zig Extension independent Zig language detection
+
+### 1.0.2
+
+> Added start, stop, and restart commands
