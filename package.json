@@ -47,7 +47,7 @@
 				"zigLanguageClient.path": {
 					"scope": "resource",
 					"type": "string",
-					"description": "Path to `zls` executable."
+					"description": "Path to `zls` executable. Example: `C:/zls/zig-cache/bin/zls.exe`."
 				}
 			}
 		},
