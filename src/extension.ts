@@ -11,6 +11,7 @@ let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
   const zlsPath = workspace.getConfiguration('zigLanguageClient').get('path', '');
+  const debugLog = workspace.getConfiguration('zigLanguageClient').get('debugLog', false);
   
   if (!zlsPath) {
     window.showErrorMessage("Failed to find zls executable! Please specify its path in your settings with `zigLanguageClient.path`.");
@@ -19,7 +20,7 @@ export function activate(context: ExtensionContext) {
 
   let serverOptions: ServerOptions = {
     command: zlsPath,
-    args: []
+    args: debugLog ? [ "--debug-log" ] : []
   };
 
   // Options to control the language client
