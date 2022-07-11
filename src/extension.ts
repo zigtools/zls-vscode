@@ -1,17 +1,18 @@
-import { workspace, ExtensionContext, window } from 'vscode';
+import { workspace, ExtensionContext, window } from "vscode";
 
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 import {
   LanguageClient,
   LanguageClientOptions,
   ServerOptions
-} from 'vscode-languageclient/node';
+} from "vscode-languageclient/node";
 
 let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
-  const zlsPath = workspace.getConfiguration('zigLanguageClient').get('path', '');
-  const debugLog = workspace.getConfiguration('zigLanguageClient').get('debugLog', false);
+  const configuration = workspace.getConfiguration("zls");
+  const zlsPath = configuration.get("path", "");
+  const debugLog = configuration.get("debugLog", false);
   
   if (!zlsPath) {
     window.showErrorMessage("Failed to find zls executable! Please specify its path in your settings with `zigLanguageClient.path`.");
@@ -25,14 +26,14 @@ export function activate(context: ExtensionContext) {
 
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {
-    documentSelector: [{ scheme: 'file', language: 'zig' }],
-    outputChannel: window.createOutputChannel("Zig Language Server")
+    documentSelector: [{ scheme: "file", language: "zig" }],
+    outputChannel: window.createOutputChannel("Zig Language Server"),
   };  
 
   // Create the language client and start the client.
   client = new LanguageClient(
-    'zigLanguageClient',
-    'Zig Language Server Client',
+    "zls",
+    "Zig Language Server",
     serverOptions,
     clientOptions
   );
