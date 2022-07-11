@@ -46,3 +46,4 @@ In the future, we hope to make installing ZLS for Visual Studio Code much simple
 }
 ```
 instead of using `zls.json`!
+> Fix start/stop/restart commands

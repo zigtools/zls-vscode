@@ -7,17 +7,32 @@ import {
   ServerOptions
 } from "vscode-languageclient/node";
 
-let client: LanguageClient;
+let outputChannel: vscode.OutputChannel;
+let client: LanguageClient | null = null;
 
 export function activate(context: ExtensionContext) {
+  outputChannel = window.createOutputChannel("Zig Language Server");
+
+  vscode.commands.registerCommand("zls.start", async () => {
+    await startClient();
+  });
+
+  vscode.commands.registerCommand("zls.stop", async () => {
+    await stopClient();
+  });
+
+  vscode.commands.registerCommand("zls.restart", async () => {
+    await stopClient();
+    await startClient();
+  });
+
+  startClient();
+}
+
+function startClient(): Promise<void> {
   const configuration = workspace.getConfiguration("zls");
-  const zlsPath = configuration.get("path", "");
+  const zlsPath = configuration.get("path", "zls");
   const debugLog = configuration.get("debugLog", false);
-  
-  if (!zlsPath) {
-    window.showErrorMessage("Failed to find zls executable! Please specify its path in your settings with `zigLanguageClient.path`.");
-    return;
-  }
 
   let serverOptions: ServerOptions = {
     command: zlsPath,
@@ -27,7 +42,7 @@ export function activate(context: ExtensionContext) {
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {
     documentSelector: [{ scheme: "file", language: "zig" }],
-    outputChannel: window.createOutputChannel("Zig Language Server"),
+    outputChannel,
   };  
 
   // Create the language client and start the client.
@@ -38,22 +53,23 @@ export function activate(context: ExtensionContext) {
     clientOptions
   );
 
-  client.start();
-
-  vscode.commands.registerCommand("zls.start", () => {
-    client.start();
-  });
-
-  vscode.commands.registerCommand("zls.stop", async () => {
-    await client.stop();
-  });
-
-  vscode.commands.registerCommand("zls.restart", async () => {
-    await client.stop();
-    client.start();
+  return new Promise<void>(resolve => {
+    if (client)
+      client.start().catch(err => {
+        window.showErrorMessage("Could not create zls language client! Please ensure the zls executable is either in your PATH or its path is specified in `zls.path`!");
+        client = null;
+      }).then(() => {
+        window.showInformationMessage("zls language client started!");
+        resolve();
+      });
   });
 }
 
+async function stopClient(): Promise<void> {
+  if (client) await client.stop();
+  window.showInformationMessage("zls language client stopped!");
+}
+
 export function deactivate(): Thenable<void> {
-  return client.stop();
+  return stopClient();
 }
