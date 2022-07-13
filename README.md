@@ -1,4 +1,4 @@
-# zls-vscode
+# Zig Language Server (zls) for VSCode
 
 [![VSCode Extension](https://img.shields.io/badge/vscode-extension-brightgreen)](https://marketplace.visualstudio.com/items?itemName=AugusteRame.zls-vscode)
 
@@ -6,11 +6,11 @@
 
 ## Installing
 
-`zls-vscode` is the client extension for [ZLS](https://github.com/zigtools/zls). This means, **you will need to have ZLS compiled and configured** to use this extension, as this extension only *bridges* ZLS to Visual Studio Code.
+Simply install the extension and follow the instructions in the "It seems that we couldn't find your zls install" popup if it appears - we recommend clicking the "Install zls for me!" button if you're a typical user that's not planning to contribute to zls itself. :)
 
-[Installation instructions for ZLS](https://github.com/zigtools/zls#installation) can be found on the ZLS `README.md`. Once you run `zls config` it will walk you through configuring ZLS for Visual Studio Code and your installation of Zig.
+If you *aren't* a typical user, follow the instructions [https://github.com/zigtools/zls#from-source](here) and then add zls to your system PATH or specify the path of the zls binary with the `zls.path` option in VSCode!
 
-In the future, we hope to make installing ZLS for Visual Studio Code much simpler.
+Happy Zig-ing!
 
 ## Release Notes
 
@@ -47,3 +47,7 @@ In the future, we hope to make installing ZLS for Visual Studio Code much simple
 ```
 instead of using `zls.json`!
 > Fix start/stop/restart commands
+
+### 1.1.0
+
+> You can now install zls directly from the extension! Enjoy!

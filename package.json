@@ -5,13 +5,13 @@
 		"url": "https://augustera.me"
 	},
 	"publisher": "AugusteRame",
-	"displayName": "ZLS for VSCode",
-	"description": "VSCode frontend for zls (Zig Language Server)",
+	"displayName": "Zig Language Server (zls) for VSCode",
+	"description": "VSCode frontend for zls",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/zigtools/zls-vscode"
 	},
-	"version": "1.0.5",
+	"version": "1.1.0",
 	"engines": {
 		"vscode": "^1.68.0"
 	},
@@ -25,18 +25,23 @@
 	"contributes": {
 		"commands": [
 			{
+				"command": "zls.install",
+				"title": "Install Server",
+				"category": "Zig Language Server"
+			},
+			{
 				"command": "zls.start",
-				"title": "Start Zig Language Server",
+				"title": "Start Server",
 				"category": "Zig Language Server"
 			},
 			{
 				"command": "zls.stop",
-				"title": "Stop Zig Language Server",
+				"title": "Stop Server",
 				"category": "Zig Language Server"
 			},
 			{
 				"command": "zls.restart",
-				"title": "Restart Zig Language Server",
+				"title": "Restart Server",
 				"category": "Zig Language Server"
 			}
 		],
@@ -171,6 +176,7 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"dependencies": {
+		"axios": "^0.27.2",
 		"vscode-languageclient": "8.0.2-next.5"
 	},
 	"devDependencies": {
