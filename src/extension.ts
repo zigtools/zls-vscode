@@ -7,7 +7,7 @@ import {
   ServerOptions
 } from "vscode-languageclient/node";
 import axios from "axios";
-import { existsSync, writeFileSync } from "fs";
+import { chmodSync, existsSync, writeFileSync } from "fs";
 import * as mkdirp from "mkdirp";
 
 let outputChannel: vscode.OutputChannel;
@@ -63,11 +63,15 @@ async function installExecutable(context: ExtensionContext): Promise<void> {
     if (!existsSync(installDir.fsPath))
       mkdirp.sync(installDir.fsPath);
 
+    const zlsBinPath = vscode.Uri.joinPath(installDir, `zls${def.endsWith("windows") ? ".exe" : ""}`).fsPath;
+
     writeFileSync(vscode.Uri.joinPath(installDir, `build_runner.zig`).fsPath, buildRunner);
-    writeFileSync(vscode.Uri.joinPath(installDir, `zls${def.endsWith("windows") ? ".exe" : ""}`).fsPath, exe, "binary");
+    writeFileSync(zlsBinPath, exe, "binary");
+
+    chmodSync(zlsBinPath, 0o755);
 
     let config = workspace.getConfiguration("zls");
-    await config.update("path", vscode.Uri.joinPath(installDir, `zls${def.endsWith("windows") ? ".exe" : ""}`).fsPath, true);
+    await config.update("path", zlsBinPath, true);
 
     startClient(context);
   });
@@ -119,6 +123,8 @@ function startClient(context: ExtensionContext): Promise<void> {
     serverOptions,
     clientOptions
   );
+
+  outputChannel.appendLine(`Attempting to use zls @ ${zlsPath}`);
 
   return new Promise<void>(resolve => {
     if (client)

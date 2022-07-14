@@ -52,6 +52,6 @@ instead of using `zls.json`!
 
 > You can now install zls directly from the extension! Enjoy!
 
-### 1.1.1
+### 1.1.1, 1.1.2
 
 > Bug fixes, more streamlined installation
