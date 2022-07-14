@@ -11,7 +11,7 @@
 		"type": "git",
 		"url": "https://github.com/zigtools/zls-vscode"
 	},
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"engines": {
 		"vscode": "^1.68.0"
 	},
@@ -176,7 +176,9 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"dependencies": {
+		"@types/mkdirp": "^1.0.2",
 		"axios": "^0.27.2",
+		"mkdirp": "^1.0.4",
 		"vscode-languageclient": "8.0.2-next.5"
 	},
 	"devDependencies": {

@@ -6,9 +6,9 @@
 
 ## Installing
 
-Simply install the extension and follow the instructions in the "It seems that we couldn't find your zls install" popup if it appears - we recommend clicking the "Install zls for me!" button if you're a typical user that's not planning to contribute to zls itself. :)
+Simply install the extension and you'll be good to go!
 
-If you *aren't* a typical user, follow the instructions [https://github.com/zigtools/zls#from-source](here) and then add zls to your system PATH or specify the path of the zls binary with the `zls.path` option in VSCode!
+If you want to build zls yourself, follow the instructions [https://github.com/zigtools/zls#from-source](here) and then specify the path of the zls binary with the `zls.path` option in VSCode!
 
 Happy Zig-ing!
 
@@ -51,3 +51,7 @@ instead of using `zls.json`!
 ### 1.1.0
 
 > You can now install zls directly from the extension! Enjoy!
+
+### 1.1.1
+
+> Bug fixes, more streamlined installation

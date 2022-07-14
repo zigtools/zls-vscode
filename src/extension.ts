@@ -7,7 +7,8 @@ import {
   ServerOptions
 } from "vscode-languageclient/node";
 import axios from "axios";
-import { existsSync, mkdirSync, writeFileSync } from "fs";
+import { existsSync, writeFileSync } from "fs";
+import * as mkdirp from "mkdirp";
 
 let outputChannel: vscode.OutputChannel;
 let client: LanguageClient | null = null;
@@ -46,23 +47,30 @@ async function installExecutable(context: ExtensionContext): Promise<void> {
     return;
   }
 
-  const buildRunner = (await axios.get(`${downloadsRoot}/${def}/bin/build_runner.zig`)).data;
-  const exe = (await axios.get(`${downloadsRoot}/${def}/bin/zls${def.endsWith("windows") ? ".exe" : ""}`, {
-    responseType: "arraybuffer"
-  })).data;
+  return window.withProgress({
+    title: "Installing zls...",
+    location: vscode.ProgressLocation.Notification,
+  }, async progress => {
+    progress.report({message: "Downloading build runner..."});
+    const buildRunner = (await axios.get(`${downloadsRoot}/${def}/bin/build_runner.zig`)).data;
+    progress.report({message: "Downloading zls executable..."});
+    const exe = (await axios.get(`${downloadsRoot}/${def}/bin/zls${def.endsWith("windows") ? ".exe" : ""}`, {
+      responseType: "arraybuffer"
+    })).data;
 
-  const installDir = vscode.Uri.joinPath(context.globalStorageUri, "zls_install");
-  if (!existsSync(installDir.fsPath))
-    mkdirSync(installDir.fsPath);
+    progress.report({message: "Installing..."});
+    const installDir = vscode.Uri.joinPath(context.globalStorageUri, "zls_install");
+    if (!existsSync(installDir.fsPath))
+      mkdirp.sync(installDir.fsPath);
 
-  writeFileSync(vscode.Uri.joinPath(installDir, `build_runner.zig`).fsPath, buildRunner);
-  writeFileSync(vscode.Uri.joinPath(installDir, `zls${def.endsWith("windows") ? ".exe" : ""}`).fsPath, exe, "binary");
+    writeFileSync(vscode.Uri.joinPath(installDir, `build_runner.zig`).fsPath, buildRunner);
+    writeFileSync(vscode.Uri.joinPath(installDir, `zls${def.endsWith("windows") ? ".exe" : ""}`).fsPath, exe, "binary");
 
-  let config = workspace.getConfiguration("zls");
-  await config.update("path", vscode.Uri.joinPath(installDir, `zls${def.endsWith("windows") ? ".exe" : ""}`).fsPath, true);
+    let config = workspace.getConfiguration("zls");
+    await config.update("path", vscode.Uri.joinPath(installDir, `zls${def.endsWith("windows") ? ".exe" : ""}`).fsPath, true);
 
-  window.showInformationMessage("zls has been installed and your `zls.path` has been set accordingly!");
-  startClient(context);
+    startClient(context);
+  });
 }
 
 export function activate(context: ExtensionContext) {
@@ -115,15 +123,8 @@ function startClient(context: ExtensionContext): Promise<void> {
   return new Promise<void>(resolve => {
     if (client)
       client.start().catch(err => {
-        window.showInformationMessage(
-          "It seems that we couldn't find your zls install! Either: Add zls to your system PATH, specify where to find zls with the `zls.path` option, or automatically install zls with the button below (recommended!)",
-          {},
-          "Install zls for me!",
-        ).then(value => {
-          if (value) {
-            installExecutable(context);
-          }
-        });
+        window.showInformationMessage("We're installing zls for you! Feel free to change your `zls.path` later if you so wish!");
+        installExecutable(context);
         client = null;
       }).then(() => {
         if (client) {
