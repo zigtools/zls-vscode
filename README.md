@@ -8,7 +8,7 @@
 
 Simply install the extension and you'll be good to go!
 
-If you want to build zls yourself, follow the instructions [https://github.com/zigtools/zls#from-source](here) and then specify the path of the zls binary with the `zls.path` option in VSCode!
+If you want to build zls yourself, follow the instructions [here](https://github.com/zigtools/zls#from-source) and then specify the path of the zls binary with the `zls.path` option in VSCode!
 
 Happy Zig-ing!
 
