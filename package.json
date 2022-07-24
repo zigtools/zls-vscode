@@ -125,6 +125,24 @@
 					"description": "Semantic token support",
 					"default": true
 				},
+				"zls.enable_inlay_hints": {
+					"scope": "resource",
+					"type": "boolean",
+					"description": "Inlay hint support",
+					"default": false
+				},
+				"zls.inlay_hints_show_builtin": {
+					"scope": "resource",
+					"type": "boolean",
+					"description": "enable inlay hints for builtin functions",
+					"default": true
+				},
+				"zls.inlay_hints_exclude_single_argument": {
+					"scope": "resource",
+					"type": "boolean",
+					"description": "don't show inlay hints for single argument calls",
+					"default": true
+				},
 				"zls.operator_completions": {
 					"scope": "resource",
 					"type": "boolean",
