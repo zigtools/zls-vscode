@@ -113,10 +113,10 @@
 					"description": "Path to the build_runner.zig file.",
 					"default": null
 				},
-				"zls.build_runner_cache_path": {
+				"zls.global_cache_path": {
 					"scope": "resource",
 					"type": "string",
-					"description": "Path to a directory that will be used as cache when `zig run`ning the build runner",
+					"description": "Path to the global cache directory",
 					"default": null
 				},
 				"zls.enable_semantic_tokens": {
