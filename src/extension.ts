@@ -9,6 +9,7 @@ import {
 import axios from "axios";
 import { chmodSync, existsSync, writeFileSync } from "fs";
 import * as mkdirp from "mkdirp";
+import * as child_process from "child_process";
 
 let outputChannel: vscode.OutputChannel;
 let client: LanguageClient | null = null;
@@ -97,6 +98,10 @@ export function activate(context: ExtensionContext) {
     await startClient(context);
   });
 
+  vscode.commands.registerCommand("zls.openconfig", async () => {
+    await openConfig();
+  });
+
   startClient(context);
 }
 
@@ -144,6 +149,17 @@ function startClient(context: ExtensionContext): Promise<void> {
 async function stopClient(): Promise<void> {
   if (client) await client.stop();
   window.showInformationMessage("zls language client stopped!");
+}
+
+async function openConfig(): Promise<void> {
+  const configuration = workspace.getConfiguration("zls");
+  const zlsPath = configuration.get("path", "zls");
+
+  const process = child_process.spawn(zlsPath, ['--show-config-path']);
+  process.stdout.on('data', async (data)  => {
+    const path: string = data.toString().trimEnd();
+    vscode.window.showTextDocument(vscode.Uri.file(path), { preview: false });
+  });
 }
 
 export function deactivate(): Thenable<void> {

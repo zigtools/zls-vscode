@@ -43,6 +43,11 @@
 				"command": "zls.restart",
 				"title": "Restart Server",
 				"category": "Zig Language Server"
+			},
+			{
+				"command": "zls.openconfig",
+				"title": "Open ZLS Config",
+				"category": "Zig Language Server"
 			}
 		],
 		"configuration": {
