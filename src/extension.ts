@@ -112,7 +112,7 @@ function startClient(context: ExtensionContext): Promise<void> {
 
   let serverOptions: ServerOptions = {
     command: zlsPath,
-    args: debugLog ? [ "--debug-log" ] : []
+    args: debugLog ? [ "--enable-debug-log" ] : []
   };
 
   // Options to control the language client

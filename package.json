@@ -82,10 +82,10 @@
 					"description": "Whether to enable snippet completions",
 					"default": false
 				},
-				"zls.enable_unused_variable_warnings": {
+				"zls.enable_ast_check_diagnostics": {
 					"scope": "resource",
 					"type": "boolean",
-					"description": "Whether to enable unused variable warnings",
+					"description": "Whether to enable ast-check diagnostics",
 					"default": false
 				},
 				"zls.enable_import_embedfile_argument_completions": {
