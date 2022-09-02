@@ -200,12 +200,14 @@
 		"@types/mkdirp": "^1.0.2",
 		"axios": "^0.27.2",
 		"mkdirp": "^1.0.4",
-		"vscode-languageclient": "8.0.2-next.5"
+		"vscode-languageclient": "8.0.2-next.5",
+		"which": "^2.0.2"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.2.0",
 		"@types/node": "^18.0.0",
 		"@types/vscode": "^1.68.0",
+		"@types/which": "^2.0.1",
 		"@typescript-eslint/eslint-plugin": "^5.29.0",
 		"@typescript-eslint/parser": "^5.29.0",
 		"eslint": "^8.18.0",
