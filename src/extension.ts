@@ -57,14 +57,14 @@ async function installExecutable(context: ExtensionContext): Promise<string | nu
     title: "Installing zls...",
     location: vscode.ProgressLocation.Notification,
   }, async progress => {
-    progress.report({message: "Downloading build runner..."});
+    progress.report({ message: "Downloading build runner..." });
     const buildRunner = (await axios.get(`${downloadsRoot}/${def}/bin/build_runner.zig`)).data;
-    progress.report({message: "Downloading zls executable..."});
+    progress.report({ message: "Downloading zls executable..." });
     const exe = (await axios.get(`${downloadsRoot}/${def}/bin/zls${def.endsWith("windows") ? ".exe" : ""}`, {
       responseType: "arraybuffer"
     })).data;
 
-    progress.report({message: "Installing..."});
+    progress.report({ message: "Installing..." });
     const installDir = vscode.Uri.joinPath(context.globalStorageUri, "zls_install");
     if (!fs.existsSync(installDir.fsPath)) mkdirp.sync(installDir.fsPath);
 
@@ -124,14 +124,14 @@ async function startClient(context: ExtensionContext) {
 
   let serverOptions: ServerOptions = {
     command: zlsPath,
-    args: debugLog ? [ "--enable-debug-log" ] : []
+    args: debugLog ? ["--enable-debug-log"] : []
   };
 
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {
     documentSelector: [{ scheme: "file", language: "zig" }],
     outputChannel,
-  };  
+  };
 
   // Create the language client and start the client.
   client = new LanguageClient(
@@ -159,29 +159,29 @@ async function getZLSPath(context: ExtensionContext): Promise<string | null> {
     zlsPath = which.sync('zls', { nothrow: true });
   } else if (zlsPath.startsWith("~")) {
     zlsPath = path.join(os.homedir(), zlsPath.substring(1));
-  } else if(!path.isAbsolute(zlsPath)) {
+  } else if (!path.isAbsolute(zlsPath)) {
     zlsPath = which.sync(zlsPath, { nothrow: true });
   }
 
   var message: string | null = null;
 
   const zlsPathExists = zlsPath !== null && fs.existsSync(zlsPath);
-  if(zlsPath && zlsPathExists) {
+  if (zlsPath && zlsPathExists) {
     try {
       fs.accessSync(zlsPath, fs.constants.R_OK | fs.constants.X_OK);
     } catch {
       message = `\`zls.path\` ${zlsPath} is not an executable`;
     }
     const stat = fs.statSync(zlsPath);
-    if(!stat.isFile()) {
+    if (!stat.isFile()) {
       message = `\`zls.path\` ${zlsPath} is not a file`;
     }
   }
 
-  if(message === null) {
-    if(!zlsPath) {
+  if (message === null) {
+    if (!zlsPath) {
       message = "Couldn't find Zig Language Server (ZLS) executable";
-    } else if(!zlsPathExists) {
+    } else if (!zlsPathExists) {
       message = `Couldn't find Zig Language Server (ZLS) executable at ${zlsPath}`;
     }
   }
@@ -215,7 +215,7 @@ async function openConfig(): Promise<void> {
   const zlsPath = configuration.get("path", "zls");
 
   const process = child_process.spawn(zlsPath, ['--show-config-path']);
-  process.stdout.on('data', async (data)  => {
+  process.stdout.on('data', async (data) => {
     const path: string = data.toString().trimEnd();
     vscode.window.showTextDocument(vscode.Uri.file(path), { preview: false });
   });
