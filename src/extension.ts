@@ -16,6 +16,7 @@ let client: LanguageClient | null = null;
 
 const downloadsRoot = "https://zig.pm/zls/downloads";
 
+/* eslint-disable @typescript-eslint/naming-convention */
 enum InstallationName {
   i386_linux = "i386-linux",
   i386_windows = "i386-windows",
@@ -23,6 +24,7 @@ enum InstallationName {
   x86_64_macos = "x86_64-macos",
   x86_64_windows = "x86_64-windows",
 }
+/* eslint-enable @typescript-eslint/naming-convention */
 
 function getDefaultInstallationName(): InstallationName | null {
   // NOTE: Not using a JS switch because they're ugly as hell and clunky :(
@@ -61,8 +63,7 @@ async function installExecutable(context: ExtensionContext): Promise<void> {
 
     progress.report({message: "Installing..."});
     const installDir = vscode.Uri.joinPath(context.globalStorageUri, "zls_install");
-    if (!existsSync(installDir.fsPath))
-      mkdirp.sync(installDir.fsPath);
+    if (!existsSync(installDir.fsPath)) mkdirp.sync(installDir.fsPath);
 
     const zlsBinPath = vscode.Uri.joinPath(installDir, `zls${def.endsWith("windows") ? ".exe" : ""}`).fsPath;
 
@@ -132,7 +133,7 @@ function startClient(context: ExtensionContext): Promise<void> {
   outputChannel.appendLine(`Attempting to use zls @ ${zlsPath}`);
 
   return new Promise<void>(resolve => {
-    if (client)
+    if (client) {
       client.start().catch(err => {
         window.showInformationMessage("We're installing zls for you! Feel free to change your `zls.path` later if you so wish!");
         installExecutable(context);
@@ -143,6 +144,7 @@ function startClient(context: ExtensionContext): Promise<void> {
           resolve();
         }
       });
+    }
   });
 }
 
