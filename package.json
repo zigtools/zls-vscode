@@ -48,6 +48,11 @@
 				"command": "zls.openconfig",
 				"title": "Open ZLS Config",
 				"category": "Zig Language Server"
+			},
+			{
+				"command": "zls.update",
+				"title": "Check for language server update",
+				"category": "Zig Language Server"
 			}
 		],
 		"configuration": {
@@ -64,6 +69,12 @@
 					],
 					"default": "off",
 					"description": "Traces the communication between VS Code and the language server."
+				},
+				"zls.check_for_update": {
+					"scope": "resource",
+					"type": "boolean",
+					"description": "Whether to automatically check for new updates",
+					"default": "true"
 				},
 				"zls.path": {
 					"scope": "resource",

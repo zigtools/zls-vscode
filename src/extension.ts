@@ -88,7 +88,7 @@ export function activate(context: ExtensionContext) {
   outputChannel = window.createOutputChannel("Zig Language Server");
 
   vscode.commands.registerCommand("zls.install", async () => {
-    installExecutable(context);
+    await installExecutable(context);
   });
 
   vscode.commands.registerCommand("zls.start", async () => {
@@ -105,7 +105,11 @@ export function activate(context: ExtensionContext) {
   });
 
   vscode.commands.registerCommand("zls.openconfig", async () => {
-    await openConfig();
+    await openConfig(context);
+  });
+
+  vscode.commands.registerCommand("zls.update", async () => {
+    await checkUpdate(context, false);
   });
 
   startClient(context);
@@ -113,7 +117,10 @@ export function activate(context: ExtensionContext) {
 
 async function startClient(context: ExtensionContext) {
   const configuration = workspace.getConfiguration("zls");
-  const debugLog = configuration.get("debugLog", false);
+  const debugLog = configuration.get<boolean>("debugLog", false);
+  const checkForUpdate = configuration.get<boolean>("check_for_update", true);
+
+  if (checkForUpdate) await checkUpdate(context, true);
 
   const zlsPath = await getZLSPath(context);
 
@@ -151,6 +158,7 @@ async function stopClient(): Promise<void> {
   if (client) await client.stop();
 }
 
+// returns the file system path to the zls executable
 async function getZLSPath(context: ExtensionContext): Promise<string | null> {
   const configuration = workspace.getConfiguration("zls");
   var zlsPath = configuration.get<string | null>("path", null);
@@ -210,15 +218,104 @@ async function getZLSPath(context: ExtensionContext): Promise<string | null> {
   return zlsPath;
 }
 
-async function openConfig(): Promise<void> {
+async function checkUpdate(context: ExtensionContext, autoInstallPrebuild: boolean): Promise<void> {
   const configuration = workspace.getConfiguration("zls");
-  const zlsPath = configuration.get("path", "zls");
 
-  const process = child_process.spawn(zlsPath, ['--show-config-path']);
-  process.stdout.on('data', async (data) => {
-    const path: string = data.toString().trimEnd();
-    vscode.window.showTextDocument(vscode.Uri.file(path), { preview: false });
-  });
+  const zlsPath = await getZLSPath(context);
+  if (!zlsPath) return;
+
+  if (!await isUpdateAvailable(zlsPath)) return;
+
+  const isPrebuild = await isZLSPrebuildBinary(context);
+
+  if (autoInstallPrebuild && isPrebuild) {
+    await installExecutable(context);
+  } else {
+    const message = 'There is a new update available for ZLS' + (!isPrebuild ? ". Replaces your installation with a prebuild binary." : "");
+    const response = await window.showInformationMessage(message, "Install update", "Never ask again");
+
+    if (response === "Install update") {
+      await installExecutable(context);
+    } else if (response === "Never ask again") {
+      await configuration.update("check_for_update", false, true);
+    }
+  }
+
+}
+
+// checks whether zls has been installed with `installExecutable`
+async function isZLSPrebuildBinary(context: ExtensionContext): Promise<boolean> {
+  const configuration = workspace.getConfiguration("zls");
+  var zlsPath = configuration.get<string | null>("path", null);
+  if (!zlsPath) return false;
+
+  const zlsBinPath = vscode.Uri.joinPath(context.globalStorageUri, "zls_install", "zls").fsPath;
+  return zlsPath.startsWith(zlsBinPath);
+}
+
+// checks whether there is newer version on master
+async function isUpdateAvailable(zlsPath: string): Promise<boolean | null> {
+  // get current version
+  const buffer = child_process.execFileSync(zlsPath, ['--version']);
+  const version = parseVersion(buffer.toString('utf8'));
+  if (!version) return null;
+
+  // compare version triple if commit id is available
+  if (version.commitHeight === null || version.commitHash === null) {
+    // get latest tagged version
+    const tagsResponse = await axios.get("https://api.github.com/repos/zigtools/zls/tags");
+    const latestVersion = parseVersion(tagsResponse.data[0].name);
+    if (!latestVersion) return null;
+
+    if (latestVersion.major < version.major) return false;
+    if (latestVersion.major > version.major) return true;
+    if (latestVersion.minor < version.minor) return false;
+    if (latestVersion.minor > version.minor) return true;
+    if (latestVersion.patch < version.patch) return false;
+    if (latestVersion.patch > version.patch) return true;
+    return false;
+  }
+
+  const response = await axios.get("https://api.github.com/repos/zigtools/zls/commits/master");
+  const masterHash: string = response.data.sha;
+
+  const isMaster = masterHash.startsWith(version.commitHash);
+
+  return !isMaster;
+}
+
+interface Version {
+  major: number,
+  minor: number,
+  patch: number,
+  commitHeight: number | null,
+  commitHash: string | null,
+}
+
+function parseVersion(str: string): Version | null {
+  const matches = /(\d+)\.(\d+)\.(\d+)(-dev\.(\d+)\+([0-9a-fA-F]+))?/.exec(str);
+  //                  0   . 10   .  0  -dev .218   +d0732db
+  //                                  (         optional          )?
+
+  if (!matches) return null;
+  if (matches.length !== 4 && matches.length !== 7) return null;
+
+  return {
+    major: parseInt(matches[1]),
+    minor: parseInt(matches[2]),
+    patch: parseInt(matches[3]),
+    commitHeight: (matches.length === 7) ? parseInt(matches[5]) : null,
+    commitHash: (matches.length === 7) ? matches[6] : null,
+  };
+}
+
+async function openConfig(context: ExtensionContext): Promise<void> {
+  const zlsPath = await getZLSPath(context);
+  if (!zlsPath) return;
+
+  const buffer = child_process.execFileSync(zlsPath, ['--show-config-path']);
+  const path: string = buffer.toString('utf8').trimEnd();
+  await vscode.window.showTextDocument(vscode.Uri.file(path), { preview: false });
 }
 
 export function deactivate(): Thenable<void> {
