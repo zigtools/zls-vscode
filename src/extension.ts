@@ -57,8 +57,6 @@ async function installExecutable(context: ExtensionContext): Promise<string | nu
     title: "Installing zls...",
     location: vscode.ProgressLocation.Notification,
   }, async progress => {
-    progress.report({ message: "Downloading build runner..." });
-    const buildRunner = (await axios.get(`${downloadsRoot}/${def}/bin/build_runner.zig`)).data;
     progress.report({ message: "Downloading zls executable..." });
     const exe = (await axios.get(`${downloadsRoot}/${def}/bin/zls${def.endsWith("windows") ? ".exe" : ""}`, {
       responseType: "arraybuffer"
@@ -70,7 +68,6 @@ async function installExecutable(context: ExtensionContext): Promise<string | nu
 
     const zlsBinPath = vscode.Uri.joinPath(installDir, `zls${def.endsWith("windows") ? ".exe" : ""}`).fsPath;
 
-    fs.writeFileSync(vscode.Uri.joinPath(installDir, `build_runner.zig`).fsPath, buildRunner);
     fs.writeFileSync(zlsBinPath, exe, "binary");
 
     fs.chmodSync(zlsBinPath, 0o755);
