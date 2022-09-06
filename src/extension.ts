@@ -26,6 +26,7 @@ enum InstallationName {
   x86_64_linux = "x86_64-linux",
   x86_64_macos = "x86_64-macos",
   x86_64_windows = "x86_64-windows",
+  arm_64_macos = 'aarch64-macos',
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -41,6 +42,8 @@ function getDefaultInstallationName(): InstallationName | null {
     if (plat === "linux") return InstallationName.x86_64_linux;
     else if (plat === "darwin") return InstallationName.x86_64_macos;
     else if (plat === "win32") return InstallationName.x86_64_windows;
+  } else if (arch === "arm64") {
+    if (plat === "darwin") return InstallationName.arm_64_macos;
   }
 
   return null;
