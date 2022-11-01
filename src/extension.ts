@@ -56,6 +56,8 @@ async function installExecutable(context: ExtensionContext): Promise<string | nu
     return null;
   }
 
+  await stopClient();
+
   return window.withProgress({
     title: "Installing zls...",
     location: vscode.ProgressLocation.Notification,
@@ -78,7 +80,7 @@ async function installExecutable(context: ExtensionContext): Promise<string | nu
     let config = workspace.getConfiguration("zls");
     await config.update("path", zlsBinPath, true);
 
-    startClient(context);
+    await startClient(context);
 
     return zlsBinPath;
   });
@@ -231,7 +233,7 @@ async function checkUpdate(context: ExtensionContext, autoInstallPrebuild: boole
   if (autoInstallPrebuild && isPrebuild) {
     await installExecutable(context);
   } else {
-    const message = 'There is a new update available for ZLS' + (!isPrebuild ? ". Replaces your installation with a prebuild binary." : "");
+    const message = `There is a new update available for ZLS. ${!isPrebuild ? "It would replace your installation with a prebuilt binary." : ""}`;
     const response = await window.showInformationMessage(message, "Install update", "Never ask again");
 
     if (response === "Install update") {
