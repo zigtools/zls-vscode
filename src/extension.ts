@@ -56,8 +56,6 @@ async function installExecutable(context: ExtensionContext): Promise<string | nu
     return null;
   }
 
-  await stopClient();
-
   return window.withProgress({
     title: "Installing zls...",
     location: vscode.ProgressLocation.Notification,
@@ -80,29 +78,25 @@ async function installExecutable(context: ExtensionContext): Promise<string | nu
     let config = workspace.getConfiguration("zls");
     await config.update("path", zlsBinPath, true);
 
-    await startClient(context);
-
     return zlsBinPath;
   });
 }
 
-export function activate(context: ExtensionContext) {
+export async function activate(context: ExtensionContext) {
   outputChannel = window.createOutputChannel("Zig Language Server");
 
   vscode.commands.registerCommand("zls.install", async () => {
+    await stopClient();
     await installExecutable(context);
-  });
-
-  vscode.commands.registerCommand("zls.start", async () => {
-    await startClient(context);
   });
 
   vscode.commands.registerCommand("zls.stop", async () => {
     await stopClient();
   });
 
-  vscode.commands.registerCommand("zls.restart", async () => {
+  vscode.commands.registerCommand("zls.startRestart", async () => {
     await stopClient();
+    await checkUpdateMaybe(context);
     await startClient(context);
   });
 
@@ -111,18 +105,24 @@ export function activate(context: ExtensionContext) {
   });
 
   vscode.commands.registerCommand("zls.update", async () => {
+    await stopClient();
     await checkUpdate(context, false);
+    await startClient(context);
   });
 
-  startClient(context);
+  await checkUpdateMaybe(context);
+  await startClient(context);
+}
+
+async function checkUpdateMaybe(context: ExtensionContext) {
+  const configuration = workspace.getConfiguration("zls");
+  const checkForUpdate = configuration.get<boolean>("check_for_update", true);
+  if (checkForUpdate) await checkUpdate(context, true);
 }
 
 async function startClient(context: ExtensionContext) {
   const configuration = workspace.getConfiguration("zls");
   const debugLog = configuration.get<boolean>("debugLog", false);
-  const checkForUpdate = configuration.get<boolean>("check_for_update", true);
-
-  if (checkForUpdate) await checkUpdate(context, true);
 
   const zlsPath = await getZLSPath(context);
 
@@ -157,7 +157,8 @@ async function startClient(context: ExtensionContext) {
 }
 
 async function stopClient(): Promise<void> {
-  if (client) await client.stop();
+  if (client) client.stop();
+  client = null;
 }
 
 // returns the file system path to the zls executable

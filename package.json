@@ -11,7 +11,7 @@
 		"type": "git",
 		"url": "https://github.com/zigtools/zls-vscode"
 	},
-	"version": "1.1.4",
+	"version": "1.1.5",
 	"engines": {
 		"vscode": "^1.68.0"
 	},
@@ -30,18 +30,13 @@
 				"category": "Zig Language Server"
 			},
 			{
-				"command": "zls.start",
-				"title": "Start Server",
+				"command": "zls.startRestart",
+				"title": "Start / Restart Server",
 				"category": "Zig Language Server"
 			},
 			{
 				"command": "zls.stop",
 				"title": "Stop Server",
-				"category": "Zig Language Server"
-			},
-			{
-				"command": "zls.restart",
-				"title": "Restart Server",
 				"category": "Zig Language Server"
 			},
 			{
@@ -51,7 +46,7 @@
 			},
 			{
 				"command": "zls.update",
-				"title": "Check for language server update",
+				"title": "Check for Server Updates",
 				"category": "Zig Language Server"
 			}
 		],
