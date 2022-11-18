@@ -21,12 +21,12 @@ const downloadsRoot = "https://zig.pm/zls/downloads";
 
 /* eslint-disable @typescript-eslint/naming-convention */
 enum InstallationName {
-  i386_linux = "i386-linux",
-  i386_windows = "i386-windows",
+  x86_linux = "x86-linux",
+  x86_windows = "x86-windows",
   x86_64_linux = "x86_64-linux",
   x86_64_macos = "x86_64-macos",
   x86_64_windows = "x86_64-windows",
-  arm_64_macos = 'aarch64-macos',
+  arm_64_macos = "aarch64-macos",
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -36,8 +36,8 @@ function getDefaultInstallationName(): InstallationName | null {
   const plat = process.platform;
   const arch = process.arch;
   if (arch === "ia32") {
-    if (plat === "linux") return InstallationName.i386_linux;
-    else if (plat === "win32") return InstallationName.i386_windows;
+    if (plat === "linux") return InstallationName.x86_linux;
+    else if (plat === "win32") return InstallationName.x86_windows;
   } else if (arch === "x64") {
     if (plat === "linux") return InstallationName.x86_64_linux;
     else if (plat === "darwin") return InstallationName.x86_64_macos;
