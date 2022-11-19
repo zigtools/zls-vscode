@@ -1,5 +1,6 @@
 {
 	"name": "zls-vscode",
+	"icon": "assets/icon-128.png",
 	"author": {
 		"name": "Auguste Rame",
 		"url": "https://augustera.me"
