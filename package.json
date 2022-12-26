@@ -12,7 +12,7 @@
 		"type": "git",
 		"url": "https://github.com/zigtools/zls-vscode"
 	},
-	"version": "1.1.7",
+	"version": "1.1.8",
 	"engines": {
 		"vscode": "^1.68.0"
 	},
@@ -86,80 +86,86 @@
 				"zls.enable_snippets": {
 					"scope": "resource",
 					"type": "boolean",
-					"description": "Whether to enable snippet completions",
+					"description": "Enables snippet completions when the client also supports them",
 					"default": false
 				},
 				"zls.enable_ast_check_diagnostics": {
 					"scope": "resource",
 					"type": "boolean",
 					"description": "Whether to enable ast-check diagnostics",
+					"default": true
+				},
+				"zls.enable_autofix": {
+					"scope": "resource",
+					"type": "boolean",
+					"description": "Whether to automatically fix errors on save. Currently supports adding and removing discards.",
 					"default": false
 				},
 				"zls.enable_import_embedfile_argument_completions": {
 					"scope": "resource",
 					"type": "boolean",
-					"description": "Whether to enable import/embedFile argument completions (NOTE: these are triggered manually as updating the autotrigger characters may cause issues)",
+					"description": "Whether to enable import/embedFile argument completions",
 					"default": false
-				},
-				"zls.zig_lib_path": {
-					"scope": "resource",
-					"type": "string",
-					"description": "Zig library path",
-					"default": null
-				},
-				"zls.zig_exe_path": {
-					"scope": "resource",
-					"type": "string",
-					"description": "Zig executable path used to run the custom build runner. May be used to find a lib path if none is provided.",
-					"default": null
-				},
-				"zls.warn_style": {
-					"scope": "resource",
-					"type": "boolean",
-					"description": "Whether to pay attention to style issues. This is opt-in since the style guide explicitly states that the style info provided is a guideline only.",
-					"default": false
-				},
-				"zls.build_runner_path": {
-					"scope": "resource",
-					"type": "string",
-					"description": "Path to the build_runner.zig file.",
-					"default": null
-				},
-				"zls.global_cache_path": {
-					"scope": "resource",
-					"type": "string",
-					"description": "Path to the global cache directory",
-					"default": null
 				},
 				"zls.enable_semantic_tokens": {
 					"scope": "resource",
 					"type": "boolean",
-					"description": "Semantic token support",
+					"description": "Enables semantic token support when the client also supports it",
 					"default": true
 				},
 				"zls.enable_inlay_hints": {
 					"scope": "resource",
 					"type": "boolean",
-					"description": "Inlay hint support",
+					"description": "Enables inlay hint support when the client also supports it",
 					"default": false
 				},
 				"zls.inlay_hints_show_builtin": {
 					"scope": "resource",
 					"type": "boolean",
-					"description": "enable inlay hints for builtin functions",
+					"description": "Enable inlay hints for builtin functions",
 					"default": true
 				},
 				"zls.inlay_hints_exclude_single_argument": {
 					"scope": "resource",
 					"type": "boolean",
-					"description": "don't show inlay hints for single argument calls",
+					"description": "Don't show inlay hints for single argument calls",
 					"default": true
+				},
+				"zls.inlay_hints_hide_redundant_param_names": {
+					"scope": "resource",
+					"type": "boolean",
+					"description": "Hides inlay hints when parameter name matches the identifier (e.g. foo: foo)",
+					"default": false
+				},
+				"zls.inlay_hints_hide_redundant_param_names_last_token": {
+					"scope": "resource",
+					"type": "boolean",
+					"description": "Hides inlay hints when parameter name matches the last token of a parameter node (e.g. foo: bar.foo, foo: &foo)",
+					"default": false
 				},
 				"zls.operator_completions": {
 					"scope": "resource",
 					"type": "boolean",
-					"description": "Whether to enable `*` and `?` operators in completion lists",
+					"description": "Enables `*` and `?` operators in completion lists",
 					"default": true
+				},
+				"zls.warn_style": {
+					"scope": "resource",
+					"type": "boolean",
+					"description": "Enables warnings for style guideline mismatches",
+					"default": false
+				},
+				"zls.highlight_global_var_declarations": {
+					"scope": "resource",
+					"type": "boolean",
+					"description": "Whether to highlight global var declarations",
+					"default": false
+				},
+				"zls.use_comptime_interpreter": {
+					"scope": "resource",
+					"type": "boolean",
+					"description": "Whether to use the comptime interpreter",
+					"default": false
 				},
 				"zls.include_at_in_builtins": {
 					"scope": "resource",
@@ -167,22 +173,46 @@
 					"description": "Whether the @ sign should be part of the completion of builtins",
 					"default": false
 				},
-				"zls.max_detail_length": {
-					"scope": "resource",
-					"type": "integer",
-					"description": "The detail field of completions is truncated to be no longer than this (in bytes).",
-					"default": 1048576
-				},
 				"zls.skip_std_references": {
 					"scope": "resource",
 					"type": "boolean",
-					"description": "Skips references to std. This will improve lookup speeds. Going to definition however will continue to work",
+					"description": "When true, skips searching for references in std. Improves lookup speed for functions in user's code. Renaming and go-to-definition will continue to work as is",
 					"default": false
+				},
+				"zls.max_detail_length": {
+					"scope": "resource",
+					"type": "integer",
+					"description": "The detail field of completions is truncated to be no longer than this (in bytes)",
+					"default": 1048576
 				},
 				"zls.builtin_path": {
 					"scope": "resource",
 					"type": "string",
-					"description": "Path to \"builtin;\" useful for debugging, automatically set if let null",
+					"description": "Path to 'builtin;' useful for debugging, automatically set if let null",
+					"default": null
+				},
+				"zls.zig_lib_path": {
+					"scope": "resource",
+					"type": "string",
+					"description": "Zig library path, e.g. `/path/to/zig/lib/zig`, used to analyze std library imports",
+					"default": null
+				},
+				"zls.zig_exe_path": {
+					"scope": "resource",
+					"type": "string",
+					"description": "Zig executable path, e.g. `/path/to/zig/zig`, used to run the custom build runner. If `null`, zig is looked up in `PATH`. Will be used to infer the zig standard library path if none is provided",
+					"default": null
+				},
+				"zls.build_runner_path": {
+					"scope": "resource",
+					"type": "string",
+					"description": "Path to the `build_runner.zig` file provided by zls. null is equivalent to `${executable_directory}/build_runner.zig`",
+					"default": null
+				},
+				"zls.global_cache_path": {
+					"scope": "resource",
+					"type": "string",
+					"description": "Path to a directroy that will be used as zig's cache. null is equivalent to `${KnownFloders.Cache}/zls`",
 					"default": null
 				}
 			}
