@@ -117,7 +117,13 @@ export async function activate(context: ExtensionContext) {
 async function checkUpdateMaybe(context: ExtensionContext) {
   const configuration = workspace.getConfiguration("zls");
   const checkForUpdate = configuration.get<boolean>("check_for_update", true);
-  if (checkForUpdate) await checkUpdate(context, true);
+  if (checkForUpdate) {
+    try {
+      await checkUpdate(context, true);
+    } catch (err: any) {
+      outputChannel.appendLine(`Failed to check for update. Reason: ${err.message}`);
+    }
+  };
 }
 
 async function startClient(context: ExtensionContext) {
