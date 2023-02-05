@@ -6,9 +6,33 @@
 
 ## Installing
 
-Simply install the extension and you'll be good to go!
+Simply install the extension from the [VS Marketplace](https://marketplace.visualstudio.com/items?itemName=AugusteRame.zls-vscode) or the Extensions tab and you'll be good to go!
 
-If you want to build zls yourself, follow the instructions [here](https://github.com/zigtools/zls#from-source) and then specify the path of the zls binary with the `zls.path` option in VSCode!
+### Building from source
+
+If you want to build zls yourself, follow the instructions [here](https://github.com/zigtools/zls#from-source) and then specify the path of the zls binary with the `zls.path` option in VSCode!  
+
+
+**Building Zig Language Server**
+
+Dependencies:
+
+- [npm](https://nodejs.org/en/download/)
+
+Install [the VSCode Extensions command line tool](https://code.visualstudio.com/api/working-with-extensions/publishing-extension), clone this repository and build the VSIX package. 
+
+```sh
+npm install -g @vscode/vsce
+git clone https://github.com/zigtools/zls-vscode
+cd zls-vscode
+vsce package
+```
+
+Finally...
+1. open the Extensions tab in VSCode
+2. click on the dree dots in the upper right corner of the Extensions tab
+3. choose "Install from VSIX..." and choose the .vsix file you just created.
+
 
 Happy Zig-ing!
 
