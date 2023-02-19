@@ -1,5 +1,9 @@
 # Zig Language Server (zls) for VSCode
 
+## THIS EXTENSION IS DEPRECATED
+
+**Please use https://marketplace.visualstudio.com/items?itemName=ziglang.vscode-zig instead**
+
 [![VSCode Extension](https://img.shields.io/badge/vscode-extension-brightgreen)](https://marketplace.visualstudio.com/items?itemName=AugusteRame.zls-vscode)
 
 `zls-vscode` is a language client extension for [`zls`](https://github.com/zigtools/zls), the awesome Zig Language Server.
